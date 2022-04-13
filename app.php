@@ -64,22 +64,23 @@ function calculateCommissions(string $filepath): void
         return;
     }
 
+    // Readying input file by row
     while (!feof($file))
     {
         $row = fgets($file);
         if (empty(trim($row))) {
             continue;
         }
+        // Trying to decode row
         try {
             $rowData = json_decode($row, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             print_r('Wrong JSON format' . PHP_EOL);
             continue;
         }
-        $amount = (float) $rowData['amount'];
-        $currency = $rowData['currency'];
         $countryCode = getCountryCodeByBin($rowData['bin']);
-        print_r(calculateCommissionByCountry($amount, $currency, $countryCode) . PHP_EOL);
+        // Output calculated commission
+        print_r(calculateCommissionByCountry((float) $rowData['amount'], $rowData['currency'], $countryCode) . PHP_EOL);
     }
 }
 
